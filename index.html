@@ -683,16 +683,34 @@ function setType(t) {
 
 /* ── Links ── */
 function updateLinks() {
-  const city = document.getElementById('city').value;
+  const city = document.getElementById('city').value || 'taipei';
   const list = currentType === 'smoke' ? SMOKE_LINKS[city] : BUTT_LINKS[city];
-  document.getElementById('links').innerHTML = list.map(l => `
-    <div class="link-item">
-      <a href="${l.url}" target="_blank" rel="noopener noreferrer">
-        🔗 ${l.label}${l.star ? '<span class="link-star">推薦領獎</span>' : ''}
-      </a>
-      ${l.note ? `<span class="link-note">${l.note}</span>` : ''}
-    </div>
-  `).join('');
+  if (!list) return;
+  const container = document.getElementById('links');
+  container.innerHTML = '';
+  list.forEach(function(l) {
+    var item = document.createElement('div');
+    item.className = 'link-item';
+    var a = document.createElement('a');
+    a.href = l.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = '🔗 ' + l.label;
+    if (l.star) {
+      var badge = document.createElement('span');
+      badge.className = 'link-star';
+      badge.textContent = '推薦領獎';
+      a.appendChild(badge);
+    }
+    item.appendChild(a);
+    if (l.note) {
+      var note = document.createElement('span');
+      note.className = 'link-note';
+      note.textContent = l.note;
+      item.appendChild(note);
+    }
+    container.appendChild(item);
+  });
 }
 
 /* ── Generate text ── */
@@ -844,8 +862,12 @@ window.addEventListener('appinstalled', () => {
 });
 
 /* ── Init ── */
-document.getElementById('date').value = new Date().toISOString().split('T')[0];
-setType('smoke');
+(function() {
+  document.getElementById('date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('city').value = 'taipei';
+  setType('smoke');
+  updateLinks();
+})();
 </script>
 
 <!-- PWA service worker registration -->
