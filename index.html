@@ -834,7 +834,9 @@ window.addEventListener('appinstalled', function() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').then(function(reg) {
+    /* updateViaCache:'none' 讓瀏覽器每次都從網路拿 sw.js，不走 HTTP 快取
+       ?v=3 是 cache-bust query string，每次部署連同版號一起改 */
+    navigator.serviceWorker.register('sw.js?v=3', { updateViaCache: 'none' }).then(function(reg) {
       /* 每次頁面載入都主動檢查 SW 是否有新版 */
       reg.update();
 
