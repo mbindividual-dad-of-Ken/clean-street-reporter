@@ -834,7 +834,31 @@ window.addEventListener('appinstalled', function() {
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      /* 每次頁面載入都主動檢查 SW 是否有新版 */
+      reg.update();
+
+      /* 新 SW waiting 時，立即 skipWaiting 並重新載入頁面 */
+      reg.addEventListener('updatefound', function() {
+        var newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', function() {
+          if (newWorker.state === 'installed' &&
+              navigator.serviceWorker.controller) {
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      });
+
+      /* SW 控制權換手後重新載入，確保頁面是最新版 */
+      var refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }).catch(function() {});
   });
 }
 </script>
