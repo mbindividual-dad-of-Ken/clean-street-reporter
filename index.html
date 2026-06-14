@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="快速產生台灣行車違規檢舉文字，支援雙北桃園，行車抽菸與亂丟菸蒂兩種違規類型。本工具不儲存任何個人資料。">
+<meta name="description" content="快速產生台灣行車違規檢舉文字，支援雙北桃園，涵蓋道路交通管理處罰條例第7條之1全部18款可檢舉項目及廢棄物清理法。本工具不儲存任何個人資料。">
 <meta name="theme-color" content="#1a3a5c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,469 +15,127 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a3a5c;--navy-light:#2a5080;--navy-pale:#e8eef5;
+  --orange:#e8691e;--orange-light:#fdf0e8;--orange-dark:#c45516;
+  --green:#2d7a4f;--green-light:#e8f5ee;
+  --red:#c0392b;--red-light:#fdecea;
+  --amber:#d4860a;--amber-light:#fef8e7;
+  --purple:#5b4fcf;--purple-light:#eeecfb;
+  --text:#1a2332;--text-mid:#4a5568;--text-muted:#718096;
+  --border:#d1dae6;--surface:#f8f9fb;--white:#ffffff;
+  --radius:8px;--radius-lg:12px;
+  --shadow-sm:0 1px 3px rgba(26,58,92,0.08);
+  --font:'Noto Sans TC',-apple-system,BlinkMacSystemFont,sans-serif
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);color:var(--text);background:var(--surface);min-height:100vh;line-height:1.6}
 
-  :root {
-    --navy: #1a3a5c;
-    --navy-light: #2a5080;
-    --navy-pale: #e8eef5;
-    --orange: #e8691e;
-    --orange-light: #fdf0e8;
-    --orange-dark: #c45516;
-    --green: #2d7a4f;
-    --green-light: #e8f5ee;
-    --red: #c0392b;
-    --red-light: #fdecea;
-    --amber: #d4860a;
-    --amber-light: #fef8e7;
-    --text: #1a2332;
-    --text-mid: #4a5568;
-    --text-muted: #718096;
-    --border: #d1dae6;
-    --surface: #f8f9fb;
-    --white: #ffffff;
-    --radius: 8px;
-    --radius-lg: 12px;
-    --shadow-sm: 0 1px 3px rgba(26,58,92,0.08);
-    --shadow: 0 4px 12px rgba(26,58,92,0.10);
-    --font: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
+/* Header */
+header{background:var(--navy);color:var(--white);padding:1.1rem 1.25rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.header-icon{width:34px;height:34px;background:var(--orange);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px}
+header h1{font-size:1rem;font-weight:700;letter-spacing:.02em;line-height:1.3}
+header p{font-size:.7rem;opacity:.65;margin-top:1px}
+.version-badge{margin-left:auto;font-size:.62rem;opacity:.5;letter-spacing:.04em;white-space:nowrap}
 
-  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+/* Main */
+main{max-width:780px;margin:0 auto;padding:1.1rem 1rem 3rem}
 
-  body {
-    font-family: var(--font);
-    color: var(--text);
-    background: var(--surface);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
+/* Category grid */
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1.1rem}
+@media(min-width:540px){.cat-grid{grid-template-columns:repeat(3,1fr)}}
+.cat-btn{padding:.65rem .5rem;border-radius:var(--radius-lg);border:2px solid var(--border);background:var(--white);cursor:pointer;font-family:var(--font);font-size:.78rem;font-weight:500;color:var(--text-mid);display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;-webkit-tap-highlight-color:transparent;text-align:center;line-height:1.3}
+.cat-btn .cat-icon{font-size:1.4rem}
+.cat-btn.active{border-color:var(--navy);background:var(--navy-pale);color:var(--navy)}
+.cat-btn.active-env{border-color:var(--green);background:var(--green-light);color:var(--green)}
 
-  /* ── Header ── */
-  header {
-    background: var(--navy);
-    color: var(--white);
-    padding: 1.25rem 1.5rem 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
+/* Notice */
+.notice{border-radius:var(--radius);padding:.65rem .9rem;font-size:.8rem;margin-bottom:1rem;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.notice-icon{flex-shrink:0;font-size:.95rem;margin-top:1px}
+.notice.warning{background:var(--amber-light);color:#7a4f00;border:1px solid #f0d070}
+.notice.info{background:var(--navy-pale);color:var(--navy);border:1px solid #b0c8e0}
+.notice.env{background:var(--green-light);color:#1a5c35;border:1px solid #a0d4b0}
 
-  .header-inner {
-    max-width: 760px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+/* Card */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:1.1rem;margin-bottom:.9rem;box-shadow:var(--shadow-sm)}
+.card-title{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
 
-  .header-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--orange);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 18px;
-  }
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.field{display:flex;flex-direction:column;gap:4px}
+.field.full{grid-column:1/-1}
+label{font-size:.76rem;font-weight:500;color:var(--text-mid);letter-spacing:.01em}
+input[type=text],input[type=date],input[type=time],select,textarea{font-family:var(--font);font-size:.88rem;color:var(--text);background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:.5rem .7rem;width:100%;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy-light);box-shadow:0 0 0 3px rgba(26,58,92,.1)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23718096' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;padding-right:1.8rem}
 
-  header h1 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1.3;
-  }
+/* Deadline */
+.deadline-bar{display:flex;align-items:center;gap:6px;margin-top:.4rem;font-size:.75rem;font-weight:500;padding:.35rem .6rem;border-radius:var(--radius);transition:all .2s}
+.deadline-bar.ok{background:var(--green-light);color:var(--green)}
+.deadline-bar.warn{background:var(--amber-light);color:#7a4f00}
+.deadline-bar.over{background:var(--red-light);color:var(--red)}
+.deadline-bar.empty{background:var(--surface);color:var(--text-muted);border:1px dashed var(--border)}
 
-  header p {
-    font-size: 0.72rem;
-    opacity: 0.7;
-    margin-top: 1px;
-    letter-spacing: 0.01em;
-  }
+/* Output */
+.output-area{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem;font-size:.85rem;line-height:1.9;white-space:pre-wrap;color:var(--text);min-height:130px;font-family:var(--font);word-break:break-all}
+.output-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.output-label{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase}
 
-  .version-badge {
-    margin-left: auto;
-    font-size: 0.65rem;
-    opacity: 0.55;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
+/* Buttons */
+.btn{font-family:var(--font);font-size:.8rem;font-weight:500;padding:.4rem .8rem;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--white);color:var(--text-mid);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn:hover{background:var(--surface);border-color:var(--navy);color:var(--navy)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--navy);border-color:var(--navy);color:var(--white);font-size:.9rem;padding:.65rem 1.1rem;border-radius:var(--radius-lg);justify-content:center;width:100%;margin-top:.4rem}
+.btn-primary:hover{background:var(--navy-light);border-color:var(--navy-light);color:var(--white)}
+.copy-success{display:none;font-size:.76rem;color:var(--green);font-weight:500;align-items:center;gap:4px;margin-top:.35rem;justify-content:center}
+.copy-success.show{display:flex}
 
-  /* ── Main layout ── */
-  main {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 1.25rem 1rem 3rem;
-  }
+/* Links */
+.link-list{display:flex;flex-direction:column;gap:.55rem}
+.link-item{display:flex;flex-direction:column;gap:2px}
+.link-item a{color:var(--navy-light);text-decoration:none;font-size:.85rem;font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:color .15s}
+.link-item a:hover{color:var(--orange)}
+.link-note{font-size:.7rem;color:var(--text-muted);margin-left:1rem}
+.link-star{font-size:.68rem;font-weight:700;color:var(--orange);background:var(--orange-light);padding:1px 5px;border-radius:4px;margin-left:4px}
 
-  /* ── Type switcher ── */
-  .type-switcher {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
+/* Checklist */
+.checklist{display:flex;flex-direction:column;gap:.4rem}
+.check-item{display:flex;align-items:flex-start;gap:7px;font-size:.8rem;line-height:1.4}
+.check-dot{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.62rem;font-weight:700}
+.check-dot.ok{background:var(--green-light);color:var(--green)}
+.check-dot.fail{background:var(--red-light);color:var(--red)}
+.check-dot.manual{background:var(--surface);color:var(--text-muted);border:1.5px dashed var(--border)}
+.check-text.ok{color:var(--text)}
+.check-text.fail{color:var(--red)}
+.check-text.manual{color:var(--text-muted)}
 
-  .type-btn {
-    padding: 0.85rem 1rem;
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--border);
-    background: var(--white);
-    cursor: pointer;
-    font-family: var(--font);
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-mid);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.18s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
+/* Section label */
+.section-label{font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin:1.25rem 0 .65rem;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-  .type-btn .icon { font-size: 1.2rem; }
+/* Law badge */
+.law-badge{font-size:.68rem;font-weight:600;color:var(--purple);background:var(--purple-light);padding:2px 7px;border-radius:4px;margin-left:6px}
 
-  .type-btn.active-smoke {
-    border-color: var(--navy);
-    background: var(--navy-pale);
-    color: var(--navy);
-  }
+/* Footer */
+footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:1.4rem 1rem;font-size:.7rem;line-height:1.8;margin-top:2rem}
+footer a{color:rgba(255,255,255,.65);text-decoration:none}
+footer strong{color:rgba(255,255,255,.9)}
 
-  .type-btn.active-butt {
-    border-color: var(--orange);
-    background: var(--orange-light);
-    color: var(--orange-dark);
-  }
+/* PWA install */
+#install-banner{display:none;background:var(--navy-pale);border:1px solid var(--border);border-radius:var(--radius);padding:.65rem .9rem;margin-bottom:.9rem;font-size:.8rem;color:var(--navy);align-items:center;gap:10px;justify-content:space-between}
+#install-banner.show{display:flex}
+#install-banner button{font-family:var(--font);font-size:.76rem;font-weight:600;color:var(--white);background:var(--navy);border:none;border-radius:var(--radius);padding:.3rem .7rem;cursor:pointer;white-space:nowrap}
 
-  /* ── Notice bar ── */
-  .notice {
-    border-radius: var(--radius);
-    padding: 0.7rem 1rem;
-    font-size: 0.82rem;
-    margin-bottom: 1.25rem;
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    line-height: 1.5;
-  }
-
-  .notice-icon { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
-  .notice.warning { background: var(--amber-light); color: #7a4f00; border: 1px solid #f0d070; }
-  .notice.info { background: var(--navy-pale); color: var(--navy); border: 1px solid #b0c8e0; }
-
-  /* ── Card ── */
-  .card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .card-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── Form grid ── */
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.85rem;
-  }
-
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field.full { grid-column: 1 / -1; }
-
-  label {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--text-mid);
-    letter-spacing: 0.01em;
-  }
-
-  input[type="text"],
-  input[type="date"],
-  input[type="time"],
-  select,
-  textarea {
-    font-family: var(--font);
-    font-size: 0.9rem;
-    color: var(--text);
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.55rem 0.75rem;
-    width: 100%;
-    transition: border-color 0.15s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--navy-light);
-    box-shadow: 0 0 0 3px rgba(26,58,92,0.1);
-  }
-
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23718096' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    padding-right: 2rem;
-  }
-
-  /* ── Deadline badge ── */
-  .deadline-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 0.5rem;
-    font-size: 0.78rem;
-    font-weight: 500;
-    padding: 0.4rem 0.7rem;
-    border-radius: var(--radius);
-    transition: all 0.2s;
-  }
-
-  .deadline-bar.ok { background: var(--green-light); color: var(--green); }
-  .deadline-bar.warn { background: var(--amber-light); color: #7a4f00; }
-  .deadline-bar.over { background: var(--red-light); color: var(--red); }
-  .deadline-bar.empty { background: var(--surface); color: var(--text-muted); border: 1px dashed var(--border); }
-
-  /* ── Output area ── */
-  .output-area {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    font-size: 0.875rem;
-    line-height: 1.85;
-    white-space: pre-wrap;
-    color: var(--text);
-    min-height: 140px;
-    font-family: var(--font);
-    word-break: break-all;
-  }
-
-  .output-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.6rem;
-  }
-
-  .output-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  /* ── Buttons ── */
-  .btn {
-    font-family: var(--font);
-    font-size: 0.82rem;
-    font-weight: 500;
-    padding: 0.45rem 0.9rem;
-    border-radius: var(--radius);
-    border: 1.5px solid var(--border);
-    background: var(--white);
-    color: var(--text-mid);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .btn:hover { background: var(--surface); border-color: var(--navy); color: var(--navy); }
-  .btn:active { transform: scale(0.97); }
-
-  .btn-primary {
-    background: var(--navy);
-    border-color: var(--navy);
-    color: var(--white);
-    font-size: 0.95rem;
-    padding: 0.7rem 1.25rem;
-    border-radius: var(--radius-lg);
-    justify-content: center;
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-
-  .btn-primary:hover { background: var(--navy-light); border-color: var(--navy-light); color: var(--white); }
-
-  .copy-success {
-    display: none;
-    font-size: 0.78rem;
-    color: var(--green);
-    font-weight: 500;
-    align-items: center;
-    gap: 4px;
-    margin-top: 0.4rem;
-    justify-content: center;
-  }
-
-  .copy-success.show { display: flex; }
-
-  /* ── Links card ── */
-  .link-list { display: flex; flex-direction: column; gap: 0.6rem; }
-
-  .link-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .link-item a {
-    color: var(--navy-light);
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: color 0.15s;
-  }
-
-  .link-item a:hover { color: var(--orange); }
-
-  .link-note {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-left: 1.1rem;
-  }
-
-  .link-star {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--orange);
-    background: var(--orange-light);
-    padding: 1px 6px;
-    border-radius: 4px;
-    margin-left: 4px;
-  }
-
-  /* ── Checklist ── */
-  .checklist { display: flex; flex-direction: column; gap: 0.45rem; }
-
-  .check-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    font-size: 0.82rem;
-    line-height: 1.4;
-  }
-
-  .check-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-    font-size: 0.65rem;
-    font-weight: 700;
-  }
-
-  .check-dot.ok { background: var(--green-light); color: var(--green); }
-  .check-dot.fail { background: var(--red-light); color: var(--red); }
-  .check-dot.manual { background: var(--surface); color: var(--text-muted); border: 1.5px dashed var(--border); }
-
-  .check-text.ok { color: var(--text); }
-  .check-text.fail { color: var(--red); }
-  .check-text.manual { color: var(--text-muted); }
-
-  /* ── Footer ── */
-  footer {
-    background: var(--navy);
-    color: rgba(255,255,255,0.55);
-    text-align: center;
-    padding: 1.5rem 1rem;
-    font-size: 0.72rem;
-    line-height: 1.8;
-    margin-top: 2rem;
-  }
-
-  footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
-  footer strong { color: rgba(255,255,255,0.9); }
-
-  /* ── Divider ── */
-  .section-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin: 1.5rem 0 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* ── RWD ── */
-  @media (max-width: 520px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .field.full { grid-column: auto; }
-    header h1 { font-size: 0.95rem; }
-    .version-badge { display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
-  }
-
-  /* ── PWA install banner ── */
-  #install-banner {
-    display: none;
-    background: var(--navy-pale);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.7rem 1rem;
-    margin-bottom: 1rem;
-    font-size: 0.82rem;
-    color: var(--navy);
-    align-items: center;
-    gap: 10px;
-    justify-content: space-between;
-  }
-
-  #install-banner.show { display: flex; }
-
-  #install-banner button {
-    font-family: var(--font);
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--white);
-    background: var(--navy);
-    border: none;
-    border-radius: var(--radius);
-    padding: 0.35rem 0.75rem;
-    cursor: pointer;
-    white-space: nowrap;
-  }
+/* RWD */
+@media(max-width:480px){
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  header h1{font-size:.9rem}
+  .version-badge{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -487,206 +145,462 @@
     <div class="header-icon" aria-hidden="true">🚨</div>
     <div>
       <h1>行車違規檢舉產生器</h1>
-      <p>雙北・桃園｜行車抽菸・亂丟菸蒂</p>
+      <p>雙北・桃園｜道交條例§7-1全款 + 廢清法</p>
     </div>
-    <span class="version-badge">v1.0.0</span>
+    <span class="version-badge">v2.0.0</span>
   </div>
 </header>
 
 <main>
 
-  <div id="install-banner" role="status">
-    <span>📲 可加入主畫面，離線也能使用</span>
-    <button id="install-btn">安裝</button>
-  </div>
+<div id="install-banner" role="status">
+  <span>📲 可加入主畫面，離線也能使用</span>
+  <button id="install-btn">安裝</button>
+</div>
 
-  <!-- Type switcher -->
-  <div class="type-switcher" role="group" aria-label="違規類型">
-    <button class="type-btn active-smoke" id="btn-smoke" onclick="setType('smoke')" aria-pressed="true">
-      <span class="icon" aria-hidden="true">🚗</span>
-      <span>行車間抽菸</span>
-    </button>
-    <button class="type-btn" id="btn-butt" onclick="setType('butt')" aria-pressed="false">
-      <span class="icon" aria-hidden="true">🚬</span>
-      <span>亂丟菸蒂</span>
-    </button>
-  </div>
+<!-- Step 1: 選擇違規類型 -->
+<div class="section-label">選擇違規類型</div>
+<div class="cat-grid" role="group" aria-label="違規類型選擇">
+  <button class="cat-btn active" data-type="phone" onclick="setType('phone')">
+    <span class="cat-icon">📱</span>手持手機駕車
+  </button>
+  <button class="cat-btn" data-type="smoke_drive" onclick="setType('smoke_drive')">
+    <span class="cat-icon">🚗💨</span>行車間抽菸
+  </button>
+  <button class="cat-btn" data-type="dangerous" onclick="setType('dangerous')">
+    <span class="cat-icon">⚡</span>危險駕駛
+  </button>
+  <button class="cat-btn" data-type="redlight" onclick="setType('redlight')">
+    <span class="cat-icon">🚦</span>闖紅燈
+  </button>
+  <button class="cat-btn" data-type="speeding" onclick="setType('speeding')">
+    <span class="cat-icon">💨</span>一般超速
+  </button>
+  <button class="cat-btn" data-type="overtake" onclick="setType('overtake')">
+    <span class="cat-icon">🔀</span>違規超車
+  </button>
+  <button class="cat-btn" data-type="turn" onclick="setType('turn')">
+    <span class="cat-icon">↩️</span>違規轉彎/迴車
+  </button>
+  <button class="cat-btn" data-type="parking" onclick="setType('parking')">
+    <span class="cat-icon">🅿️</span>人行道停車
+  </button>
+  <button class="cat-btn" data-type="disabled" onclick="setType('disabled')">
+    <span class="cat-icon">♿</span>佔身障車位
+  </button>
+  <button class="cat-btn" data-type="hitrun" onclick="setType('hitrun')">
+    <span class="cat-icon">💥</span>肇事逃逸
+  </button>
+  <button class="cat-btn" data-type="drunk" onclick="setType('drunk')">
+    <span class="cat-icon">🍺</span>疑似酒駕
+  </button>
+  <button class="cat-btn active-env" data-type="butt" onclick="setType('butt')">
+    <span class="cat-icon">🚬</span>亂丟菸蒂
+  </button>
+</div>
 
-  <!-- Notice -->
-  <div id="notice-smoke" class="notice warning" role="alert">
-    <span class="notice-icon">⚠️</span>
-    <span><strong>7 天期限</strong>：違規行為終了日起算，逾期不予舉發。主管機關為<strong>警察局</strong>（非環保局），罰鍰 600 元。</span>
-  </div>
-  <div id="notice-butt" class="notice info" style="display:none" role="alert">
-    <span class="notice-icon">ℹ️</span>
-    <span>主管機關為<strong>環保局</strong>，罰鍰 1,200–6,000 元。實名檢舉且對方繳款後，可領罰鍰 <strong>30%</strong> 獎勵金。<strong>需使用各縣市專屬系統</strong>才能領獎金。</span>
-  </div>
+<!-- Notice -->
+<div id="notice-area"></div>
 
-  <!-- Form -->
-  <div class="card">
-    <div class="card-title">違規資料</div>
-    <div class="form-grid">
-
-      <div class="field">
-        <label for="city">縣市</label>
-        <select id="city" onchange="updateLinks(); generate();">
-          <option value="taipei">台北市</option>
-          <option value="newtaipei">新北市</option>
-          <option value="taoyuan">桃園市</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="plate">車牌號碼</label>
-        <input type="text" id="plate" placeholder="例：ABC-1234"
-               oninput="this.value=this.value.toUpperCase(); generate()"
-               autocomplete="off" autocorrect="off" spellcheck="false">
-      </div>
-
-      <div class="field">
-        <label for="date">違規日期</label>
-        <input type="date" id="date" oninput="generate()">
-        <div id="deadline-bar" class="deadline-bar empty">請填寫違規日期</div>
-      </div>
-
-      <div class="field">
-        <label for="time">違規時間</label>
-        <input type="time" id="time" oninput="generate()">
-      </div>
-
-      <div class="field full">
-        <label for="location">違規地點（路名＋方向）</label>
-        <input type="text" id="location"
-               placeholder="例：新北市板橋區文化路一段往西方向"
-               oninput="generate()">
-      </div>
-
-      <div class="field full">
-        <label for="vehicle">車型顏色</label>
-        <input type="text" id="vehicle"
-               placeholder="例：白色轎車、黑色重型機車"
-               oninput="generate()">
-      </div>
-
-      <div class="field full" id="extra-smoke">
-        <label for="traffic">周邊車況</label>
-        <select id="traffic" onchange="generate()">
-          <option value="有其他車輛行駛">有其他車輛行駛</option>
-          <option value="車流量少但有其他車輛">車流量少但有其他車輛</option>
-        </select>
-      </div>
-
-      <div class="field full" id="extra-butt" style="display:none">
-        <label for="buttdesc">丟棄行為描述</label>
-        <input type="text" id="buttdesc"
-               placeholder="例：開車窗將菸蒂直接丟出車外"
-               oninput="generate()">
-      </div>
-
+<!-- Step 2: 填寫資料 -->
+<div class="section-label">填寫違規資料</div>
+<div class="card">
+  <div class="card-title">基本資料</div>
+  <div class="form-grid">
+    <div class="field">
+      <label for="city">縣市</label>
+      <select id="city" onchange="updateLinks();generate()">
+        <option value="taipei">台北市</option>
+        <option value="newtaipei">新北市</option>
+        <option value="taoyuan">桃園市</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="plate">車牌號碼</label>
+      <input type="text" id="plate" placeholder="例：ABC-1234"
+             oninput="this.value=this.value.toUpperCase();generate()"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label for="date">違規日期</label>
+      <input type="date" id="date" oninput="generate()">
+      <div id="deadline-bar" class="deadline-bar empty">請填寫違規日期</div>
+    </div>
+    <div class="field">
+      <label for="time">違規時間</label>
+      <input type="time" id="time" oninput="generate()">
+    </div>
+    <div class="field full">
+      <label for="location">違規地點（路名＋方向）</label>
+      <input type="text" id="location"
+             placeholder="例：新北市板橋區文化路一段往西方向"
+             oninput="generate()">
+    </div>
+    <div class="field full">
+      <label for="vehicle">車型顏色</label>
+      <input type="text" id="vehicle"
+             placeholder="例：白色轎車、黑色重型機車"
+             oninput="generate()">
+    </div>
+    <!-- 動態欄位區 -->
+    <div class="field full" id="extra-field-wrap" style="display:none">
+      <label id="extra-label">補充說明</label>
+      <input type="text" id="extra-field" oninput="generate()">
     </div>
   </div>
+</div>
 
-  <!-- Output -->
-  <div class="section-label">產生的檢舉文字</div>
-  <div class="card">
-    <div class="output-header">
-      <span class="output-label">複製後貼至官方系統</span>
-      <button class="btn" onclick="copyText()" aria-label="複製檢舉文字">
-        📋 複製
-      </button>
-    </div>
-    <div class="output-area" id="output" aria-live="polite"></div>
-    <div class="copy-success" id="copy-msg" role="status">✅ 已複製到剪貼簿</div>
-    <button class="btn btn-primary" onclick="copyText()">複製檢舉文字</button>
+<!-- Step 3: 檢舉文字 -->
+<div class="section-label">產生的檢舉文字</div>
+<div class="card">
+  <div class="output-header">
+    <span class="output-label">複製後貼至官方系統</span>
+    <button class="btn" onclick="copyText()" aria-label="複製檢舉文字">📋 複製</button>
   </div>
+  <div class="output-area" id="output" aria-live="polite"></div>
+  <div class="copy-success" id="copy-msg" role="status">✅ 已複製到剪貼簿</div>
+  <button class="btn btn-primary" onclick="copyText()">複製檢舉文字</button>
+</div>
 
-  <!-- Links -->
-  <div class="section-label">送件連結</div>
-  <div class="card">
-    <div class="link-list" id="links"></div>
-    <p style="font-size:0.72rem; color:var(--text-muted); margin-top:0.75rem; line-height:1.6;">
-      連結為各縣市官方系統，點擊後將在新分頁開啟。連結最後驗證：<span id="verified-date">2025-06-14</span>。如發現失效請自行搜尋縣市環保局或警察局網站。
-    </p>
-  </div>
+<!-- Step 4: 送件連結 -->
+<div class="section-label">送件連結</div>
+<div class="card">
+  <div class="link-list" id="links"></div>
+  <p style="font-size:.7rem;color:var(--text-muted);margin-top:.7rem;line-height:1.6">
+    連結為各縣市官方系統，點擊後將在新分頁開啟。
+    最後驗證：<span id="verified-date">2025-06-15</span>。如發現失效請自行搜尋縣市環保局或警察局網站。
+  </p>
+</div>
 
-  <!-- Checklist -->
-  <div class="section-label">送件前確認</div>
-  <div class="card">
-    <div class="checklist" id="checks"></div>
-  </div>
+<!-- Step 5: 送件前確認 -->
+<div class="section-label">送件前確認</div>
+<div class="card">
+  <div class="checklist" id="checks"></div>
+</div>
 
 </main>
 
 <footer>
   <p><strong>⚠️ 免責聲明</strong></p>
   <p>本工具僅協助產生格式化的檢舉文字，實際送件及案件處理結果<br>依各主管機關規定辦理，本工具不負任何法律責任。</p>
-  <p style="margin-top:0.5rem">🔒 <strong>本工具不儲存、不傳送任何個人資料。</strong>所有輸入僅在您的裝置本機處理。</p>
-  <p style="margin-top:0.5rem">v1.0.0 ・ 連結驗證 2025-06-14 ・ <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+  <p style="margin-top:.4rem">🔒 <strong>本工具不儲存、不傳送任何個人資料。</strong>所有輸入僅在您的裝置本機處理。</p>
+  <p style="margin-top:.4rem">v2.0.0 ・ 涵蓋道交條例§7-1全款 ・ 連結驗證 2025-06-15</p>
 </footer>
 
 <script>
 'use strict';
 
-/* ── Data ── */
-const SMOKE_LINKS = {
-  taipei: [
-    { label: '台北市交通違規檢舉系統', url: 'https://prsweb.tcpd.gov.tw/', note: '需啟用 JavaScript', star: false },
-  ],
-  newtaipei: [
-    { label: '新北市交通違規檢舉系統', url: 'https://tvrs.ntpd.gov.tw/Home/Report', note: '', star: false },
-  ],
-  taoyuan: [
-    { label: '桃園市交通違規檢舉系統', url: 'https://tvrweb.typd.gov.tw:3444/', note: '', star: false },
-  ],
+/* ══════════════════════════════════════════
+   違規類型資料表
+   每筆包含：
+   - label     顯示名稱
+   - law       法條引用
+   - agency    主管機關（police / env）
+   - notice    提示文字（HTML）
+   - extraLabel 額外欄位標籤（可空）
+   - extraPlaceholder
+   - template  函式：(d)=>string，d為表單資料物件
+   - checks    額外確認項目陣列
+══════════════════════════════════════════ */
+const TYPES = {
+
+  phone: {
+    label:'手持手機駕車',
+    law:'道交條例§31-1',
+    agency:'police',
+    notice:'<strong>手持手機駕車</strong>：汽車罰 3,000 元、機車罰 1,200 元。須拍到手持裝置的畫面。',
+    noticeType:'warning',
+    extraLabel:'裝置類型',
+    extraPlaceholder:'例：手持手機通話、低頭滑手機',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人於行駛道路時，以手持方式使用${d.extra || '行動電話'}，有礙駕駛安全，違反道路交通管理處罰條例第 31-1 條規定，請依法舉發。
+
+附件：行車記錄器影像（含車牌、駕駛人手持裝置連續畫面）`;
+    },
+    checks:['影片清晰呈現駕駛人手持裝置畫面']
+  },
+
+  smoke_drive: {
+    label:'行車間抽菸',
+    law:'道交條例§31-1',
+    agency:'police',
+    notice:'<strong>行車間抽菸</strong>：罰 600 元。需同時有其他車輛行駛，方能認定影響行車安全。',
+    noticeType:'warning',
+    extraLabel:'周邊車況',
+    extraPlaceholder:'例：有其他車輛行駛、車流量少但有其他車輛',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人於道路行駛中手持點燃菸品吸食，當時${d.extra || '有其他車輛行駛'}，已致有影響他人行車安全之行為，違反道路交通管理處罰條例第 31-1 條第 1 項規定，請依法舉發。
+
+附件：行車記錄器影像（含車牌、抽菸動作連續畫面）`;
+    },
+    checks:['影片顯示菸品點燃','周邊確有其他車輛行駛']
+  },
+
+  dangerous: {
+    label:'危險駕駛',
+    law:'道交條例§43',
+    agency:'police',
+    notice:'<strong>危險駕駛</strong>：罰 6,000–36,000 元並當場禁止駕駛。包含蛇行、超速40km以上、惡意逼車、任意驟停、噪音車（改排氣管）。',
+    noticeType:'warning',
+    extraLabel:'危險駕駛行為描述',
+    extraPlaceholder:'例：蛇行變換車道、惡意逼車迫使讓道、任意驟然煞車',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人${d.extra || '以危險方式駕車'}，違反道路交通管理處罰條例第 43 條規定，請依法舉發。
+
+附件：行車記錄器影像（含危險駕駛行為連續畫面、車牌）`;
+    },
+    checks:['影片清晰呈現危險駕駛行為全程','車牌清晰可辨']
+  },
+
+  redlight: {
+    label:'闖紅燈',
+    law:'道交條例§53',
+    agency:'police',
+    notice:'<strong>闖紅燈</strong>：罰 1,800–5,400 元。影片須同時拍到號誌燈號（紅燈）與車輛通過的連貫畫面。',
+    noticeType:'warning',
+    extraLabel:'補充說明',
+    extraPlaceholder:'例：於路口號誌顯示紅燈時直行通過停止線',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人於道路交岔路口號誌顯示紅燈時，${d.extra || '未停車等候而逕行通過停止線'}，違反道路交通管理處罰條例第 53 條規定，請依法舉發。
+
+附件：行車記錄器影像（含號誌紅燈狀態、車輛通過停止線之連貫畫面、車牌）`;
+    },
+    checks:['影片同時顯示號誌紅燈與車輛通過停止線','畫面清晰可辨識號誌燈色']
+  },
+
+  speeding: {
+    label:'一般道路超速',
+    law:'道交條例§45',
+    agency:'police',
+    notice:'<strong>一般道路超速</strong>：民眾檢舉超速須有測速佐證（如行車紀錄器顯示時速），僅憑主觀判斷難以成立，建議搭配明顯超速情形。',
+    noticeType:'warning',
+    extraLabel:'超速情形描述',
+    extraPlaceholder:'例：行駛於限速60路段，目測時速逾100公里，明顯超速',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}（道路限速：請填寫）
+違規事實：該車駕駛人${d.extra || '行駛速度明顯超過道路限制速度'}，違反道路交通管理處罰條例第 45 條第 1 項第 1 款規定，請依法查處。
+
+附件：行車記錄器影像（含違規車輛行駛速度及車牌畫面）`;
+    },
+    checks:['影片或紀錄器數據能顯示超速事實','已標注該路段限速']
+  },
+
+  overtake: {
+    label:'違規超車',
+    law:'道交條例§47',
+    agency:'police',
+    notice:'<strong>違規超車</strong>：罰 1,200–2,400 元。包含：彎道/隧道超車、右側超車、未保持距離、跨越雙黃線超車等。',
+    noticeType:'warning',
+    extraLabel:'違規超車行為描述',
+    extraPlaceholder:'例：跨越雙黃線超車、在彎道路段超車',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人${d.extra || '以違規方式超越前車'}，違反道路交通管理處罰條例第 47 條第 1 項規定，請依法舉發。
+
+附件：行車記錄器影像（含違規超車全程連續畫面、車牌）`;
+    },
+    checks:['影片呈現完整超車過程','可辨識違規超車具體行為（如跨越雙黃線）']
+  },
+
+  turn: {
+    label:'違規轉彎/迴車',
+    law:'道交條例§48、§49',
+    agency:'police',
+    notice:'<strong>違規轉彎/迴車</strong>：罰 600–1,800 元。包含：未打方向燈、不讓直行車先行、禁止左轉路段迴車、跨越禁止超車線迴車等。',
+    noticeType:'warning',
+    extraLabel:'違規行為描述',
+    extraPlaceholder:'例：轉彎前未使用方向燈、在禁止迴車路段迴車',
+    template(d){
+      const law = (d.extra||'').includes('迴車') ? '第 49 條' : '第 48 條';
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人${d.extra || '轉彎時未依規定行駛'}，違反道路交通管理處罰條例${law}規定，請依法舉發。
+
+附件：行車記錄器影像（含違規行為連續畫面、車牌）`;
+    },
+    checks:['影片清晰呈現違規轉彎或迴車行為']
+  },
+
+  parking: {
+    label:'人行道違規停車',
+    law:'道交條例§55、§56',
+    agency:'police',
+    notice:'<strong>人行道/行人穿越道違規停車</strong>：臨時停車罰 300–1,200 元；停車罰 600–2,400 元。靜態違規可用照片或影片檢舉。',
+    noticeType:'warning',
+    extraLabel:'停車位置說明',
+    extraPlaceholder:'例：停放於人行道上、停放於行人穿越道上',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車停放於${d.extra || '人行道或行人穿越道上'}，妨礙行人通行，違反道路交通管理處罰條例第 56 條第 1 項第 1 款規定，請依法舉發。
+
+附件：照片或影片（含車牌、停車位置與人行道/行人穿越道標線之全景）`;
+    },
+    checks:['照片/影片同時呈現車輛、車牌與人行道標線','可辨識車輛確實停放於人行道上']
+  },
+
+  disabled: {
+    label:'佔用身障車位',
+    law:'道交條例§56',
+    agency:'police',
+    notice:'<strong>佔用身障專用停車位</strong>：罰 2,400–12,000 元。為 §56 第 2 項，罰則較一般違停重，靜態違規可用照片檢舉。',
+    noticeType:'warning',
+    extraLabel:'補充說明',
+    extraPlaceholder:'例：車輛無身障車牌或標誌',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車停放於身心障礙者專用停車位，${d.extra || '車輛未懸掛身障標誌或持有相關證明'}，違反道路交通管理處罰條例第 56 條第 2 項規定，請依法舉發。
+
+附件：照片（含車牌、身障停車格標線與車輛全景）`;
+    },
+    checks:['照片清晰顯示身障停車格標線','可確認車輛未懸掛身障標誌']
+  },
+
+  hitrun: {
+    label:'肇事逃逸（財損）',
+    law:'道交條例§60',
+    agency:'police',
+    notice:'<strong>肇事逃逸（財物損失）</strong>：罰 1,000–3,000 元，並吊扣駕照 1–3 個月。若有人員傷亡則涉及刑事責任，請同時報警。',
+    noticeType:'warning',
+    extraLabel:'肇事經過描述',
+    extraPlaceholder:'例：車輛碰撞我方停放車輛後未停車處理即離去',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車${d.extra || '肇事後未依規定處置即逕行離去'}，違反道路交通管理處罰條例第 60 條第 2 項第 3 款規定，請依法舉發。
+
+附件：行車記錄器影像或監視錄影畫面（含肇事經過、肇事後逃逸畫面、車牌）`;
+    },
+    checks:['影片含肇事前後完整經過','影片顯示車輛離去未停車處理','若有人員傷亡請同時撥打110']
+  },
+
+  drunk: {
+    label:'疑似酒駕',
+    law:'道交條例§54',
+    agency:'police',
+    notice:'<strong>疑似酒後駕車</strong>：罰 15,000–90,000 元並吊扣駕照。民眾檢舉以蛇行、碰撞、停在路中等客觀異常行為為主，警方收到後會攔查。7天期限同樣適用。',
+    noticeType:'warning',
+    extraLabel:'異常駕駛行為描述',
+    extraPlaceholder:'例：車輛蛇行、多次壓線、停在車道中不動',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人行駛時${d.extra || '出現明顯蛇行、方向不穩等異常駕駛行為'}，疑似酒後或吸毒後駕車，違反道路交通管理處罰條例第 54 條規定，請依法查處。
+
+附件：行車記錄器影像（含異常駕駛行為連續畫面、車牌）`;
+    },
+    checks:['影片清晰呈現客觀異常駕駛行為','已記錄最後目擊車輛位置/方向']
+  },
+
+  butt: {
+    label:'亂丟菸蒂',
+    law:'廢棄物清理法§27',
+    agency:'env',
+    notice:'主管機關為<strong>環保局</strong>，罰 1,200–6,000 元。實名檢舉且對方繳款後，可領罰鍰 <strong>30%</strong> 獎勵金。需使用各縣市<strong>專屬系統</strong>才能領獎金。新北市需自然人憑證登入。',
+    noticeType:'env',
+    extraLabel:'丟棄行為描述',
+    extraPlaceholder:'例：開車窗將菸蒂直接丟出車外',
+    template(d){
+      return `違規車輛：${d.vehicle}，車牌 ${d.plate}
+違規時間：${d.date} ${d.time}
+違規地點：${d.loc}
+違規事實：該車駕駛人於行駛中${d.extra || '開車窗將菸蒂丟出車外'}，於道路上任意丟棄廢棄物（菸蒂），違反廢棄物清理法第 27 條規定，請依法查處。
+
+附件：行車記錄器影像（含車牌、丟棄菸蒂前後連續動作、菸蒂落地畫面）`;
+    },
+    checks:['影片含丟棄前後連貫動作','影片含菸蒂落地畫面（可辨識）','車牌清晰可辨','原始影片檔已保留（建議保存 1–2 個月）','新北市需準備自然人憑證登入專屬系統']
+  }
 };
 
-const BUTT_LINKS = {
-  taipei: [
-    { label: '台北市廢清法檢舉獎勵專區', url: 'https://wris.epib.gov.taipei/', note: '實名檢舉，可領 30% 獎勵金', star: true },
-    { label: '環境部公害陳情系統', url: 'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note: '無獎勵金', star: false },
-  ],
-  newtaipei: [
-    { label: '新北市廢清法檢舉獎勵專區', url: 'https://envir3.epd.ntpc.gov.tw/cert/login.aspx', note: '需自然人憑證，可領 30% 獎勵金', star: true },
-    { label: '環境部公害陳情系統', url: 'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note: '無獎勵金', star: false },
-  ],
-  taoyuan: [
-    { label: '桃園市廢清法檢舉獎勵專區', url: 'https://generalwaste.tyoem.gov.tw/Convenience/Details/8', note: '實名檢舉，可領 30% 獎勵金', star: true },
-    { label: '環境部公害陳情系統', url: 'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note: '無獎勵金', star: false },
-  ],
+/* ── 送件連結 ── */
+const POLICE_LINKS = {
+  taipei:    [{label:'台北市交通違規檢舉系統', url:'https://prsweb.tcpd.gov.tw/', note:'需啟用 JavaScript', star:false}],
+  newtaipei: [{label:'新北市交通違規檢舉系統', url:'https://tvrs.ntpd.gov.tw/Home/Report', note:'', star:false}],
+  taoyuan:   [{label:'桃園市交通違規檢舉系統', url:'https://tvrweb.typd.gov.tw:3444/', note:'', star:false}]
 };
 
-const CITY_NAME = { taipei: '台北市', newtaipei: '新北市', taoyuan: '桃園市' };
+const ENV_LINKS = {
+  taipei: [
+    {label:'台北市廢清法檢舉獎勵專區', url:'https://wris.epib.gov.taipei/', note:'實名檢舉，可領 30% 獎勵金', star:true},
+    {label:'環境部公害陳情系統', url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note:'無獎勵金', star:false}
+  ],
+  newtaipei: [
+    {label:'新北市廢清法檢舉獎勵專區', url:'https://envir3.epd.ntpc.gov.tw/cert/login.aspx', note:'需自然人憑證，可領 30% 獎勵金', star:true},
+    {label:'環境部公害陳情系統', url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note:'無獎勵金', star:false}
+  ],
+  taoyuan: [
+    {label:'桃園市廢清法檢舉獎勵專區', url:'https://generalwaste.tyoem.gov.tw/Convenience/Details/8', note:'實名檢舉，可領 30% 獎勵金', star:true},
+    {label:'環境部公害陳情系統', url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note:'無獎勵金', star:false}
+  ]
+};
 
 /* ── State ── */
-let currentType = 'smoke';
+let currentType = 'phone';
 
-/* ── Type switcher ── */
+/* ── setType ── */
 function setType(t) {
   currentType = t;
+  var cfg = TYPES[t];
 
-  const smokeBtn = document.getElementById('btn-smoke');
-  const buttBtn = document.getElementById('btn-butt');
+  // Update buttons
+  document.querySelectorAll('.cat-btn').forEach(function(btn) {
+    btn.className = 'cat-btn';
+  });
+  var activeBtn = document.querySelector('[data-type="'+t+'"]');
+  if (activeBtn) {
+    activeBtn.className = cfg.agency === 'env' ? 'cat-btn active-env' : 'cat-btn active';
+  }
 
-  smokeBtn.className = 'type-btn' + (t === 'smoke' ? ' active-smoke' : '');
-  buttBtn.className = 'type-btn' + (t === 'butt' ? ' active-butt' : '');
-  smokeBtn.setAttribute('aria-pressed', t === 'smoke');
-  buttBtn.setAttribute('aria-pressed', t === 'butt');
+  // Notice
+  var na = document.getElementById('notice-area');
+  na.innerHTML = '<div class="notice '+cfg.noticeType+'" role="alert"><span class="notice-icon">'+(cfg.noticeType==='env'?'🌿':'⚠️')+'</span><span>'+cfg.notice+'<span class="law-badge">'+cfg.law+'</span></span></div>';
 
-  document.getElementById('notice-smoke').style.display = t === 'smoke' ? '' : 'none';
-  document.getElementById('notice-butt').style.display = t === 'butt' ? '' : 'none';
-  document.getElementById('extra-smoke').style.display = t === 'smoke' ? '' : 'none';
-  document.getElementById('extra-butt').style.display = t === 'butt' ? '' : 'none';
+  // Extra field
+  var wrap = document.getElementById('extra-field-wrap');
+  var lbl  = document.getElementById('extra-label');
+  var ef   = document.getElementById('extra-field');
+  if (cfg.extraLabel) {
+    lbl.textContent = cfg.extraLabel;
+    ef.placeholder = cfg.extraPlaceholder || '';
+    ef.value = '';
+    wrap.style.display = '';
+  } else {
+    wrap.style.display = 'none';
+  }
 
   updateLinks();
   generate();
 }
 
-/* ── Links ── */
+/* ── updateLinks ── */
 function updateLinks() {
-  const city = document.getElementById('city').value || 'taipei';
-  const list = currentType === 'smoke' ? SMOKE_LINKS[city] : BUTT_LINKS[city];
+  var city = document.getElementById('city').value || 'taipei';
+  var cfg  = TYPES[currentType];
+  var list = cfg.agency === 'env' ? ENV_LINKS[city] : POLICE_LINKS[city];
   if (!list) return;
-  const container = document.getElementById('links');
+  var container = document.getElementById('links');
   container.innerHTML = '';
   list.forEach(function(l) {
     var item = document.createElement('div');
@@ -713,126 +627,75 @@ function updateLinks() {
   });
 }
 
-/* ── Generate text ── */
+/* ── generate ── */
 function generate() {
-  const plate    = document.getElementById('plate').value.trim()    || '（車牌）';
-  const date     = document.getElementById('date').value;
-  const time     = document.getElementById('time').value;
-  const loc      = document.getElementById('location').value.trim() || '（地點）';
-  const vehicle  = document.getElementById('vehicle').value.trim()  || '（車型顏色）';
-  const traffic  = document.getElementById('traffic').value;
-  const buttdesc = document.getElementById('buttdesc').value.trim() || '開車窗將菸蒂直接丟出車外';
+  var plate   = document.getElementById('plate').value.trim()    || '（車牌）';
+  var date    = document.getElementById('date').value;
+  var time    = document.getElementById('time').value;
+  var loc     = document.getElementById('location').value.trim() || '（地點）';
+  var vehicle = document.getElementById('vehicle').value.trim()  || '（車型顏色）';
+  var extra   = document.getElementById('extra-field').value.trim();
 
-  const dateStr = date ? date.replace(/-/g, '/') : '（日期）';
-  const timeStr = time || '（時間）';
+  var dateStr = date ? date.replace(/-/g,'/') : '（日期）';
+  var timeStr = time || '（時間）';
 
-  let text;
-  if (currentType === 'smoke') {
-    text =
-`違規車輛：${vehicle}，車牌 ${plate}
-違規時間：${dateStr} ${timeStr}
-違規地點：${loc}
-違規事實：該車駕駛人於道路行駛中手持點燃菸品吸食，當時${traffic}，已致有影響他人行車安全之行為，違反道路交通管理處罰條例第 31-1 條規定，請依法舉發。
+  var d = {plate:plate, date:dateStr, time:timeStr, loc:loc, vehicle:vehicle, extra:extra};
+  document.getElementById('output').textContent = TYPES[currentType].template(d);
 
-附件：行車記錄器影像（含車牌清晰畫面、抽菸動作連續記錄）`;
-  } else {
-    text =
-`違規車輛：${vehicle}，車牌 ${plate}
-違規時間：${dateStr} ${timeStr}
-違規地點：${loc}
-違規事實：該車駕駛人於行駛中${buttdesc}，於道路上任意丟棄廢棄物（菸蒂），違反廢棄物清理法第 27 條規定，請依法查處。
-
-附件：行車記錄器影像（含車牌、丟棄菸蒂前後連續動作、菸蒂落地畫面）`;
-  }
-
-  document.getElementById('output').textContent = text;
   updateDeadline(date);
   renderChecks(date, time);
 }
 
-/* ── Deadline ── */
+/* ── deadline ── */
 function updateDeadline(dateStr) {
-  const bar = document.getElementById('deadline-bar');
-  if (!dateStr) {
-    bar.className = 'deadline-bar empty';
-    bar.textContent = '請填寫違規日期';
-    return;
-  }
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.floor((now - d) / 86400000);
-  const remain = 7 - diff;
-
-  if (diff < 0) {
-    bar.className = 'deadline-bar empty';
-    bar.textContent = '日期為未來，請確認';
-  } else if (remain > 2) {
-    bar.className = 'deadline-bar ok';
-    bar.textContent = `✅ 距離截止還有 ${remain} 天`;
-  } else if (remain >= 0) {
-    bar.className = 'deadline-bar warn';
-    bar.textContent = `⚠️ 注意！還剩 ${remain} 天，請盡快送件`;
-  } else {
-    bar.className = 'deadline-bar over';
-    bar.textContent = `❌ 已逾 7 天期限，無法舉發`;
-  }
+  var bar = document.getElementById('deadline-bar');
+  if (!dateStr) { bar.className='deadline-bar empty'; bar.textContent='請填寫違規日期'; return; }
+  var diff = Math.floor((new Date() - new Date(dateStr)) / 86400000);
+  var remain = 7 - diff;
+  if (diff < 0)        { bar.className='deadline-bar empty'; bar.textContent='日期為未來，請確認'; }
+  else if (remain > 2) { bar.className='deadline-bar ok';   bar.textContent='✅ 距離截止還有 '+remain+' 天'; }
+  else if (remain >= 0){ bar.className='deadline-bar warn'; bar.textContent='⚠️ 注意！還剩 '+remain+' 天，請盡快送件'; }
+  else                 { bar.className='deadline-bar over'; bar.textContent='❌ 已逾 7 天期限，無法舉發'; }
 }
 
-/* ── Checklist ── */
+/* ── checklist ── */
 function renderChecks(date, time) {
-  const plate   = document.getElementById('plate').value.trim();
-  const loc     = document.getElementById('location').value.trim();
-  const vehicle = document.getElementById('vehicle').value.trim();
-  const diff    = date ? Math.floor((new Date() - new Date(date)) / 86400000) : -1;
-  const within7 = diff >= 0 && diff <= 7;
+  var plate   = document.getElementById('plate').value.trim();
+  var loc     = document.getElementById('location').value.trim();
+  var vehicle = document.getElementById('vehicle').value.trim();
+  var diff    = date ? Math.floor((new Date()-new Date(date))/86400000) : -1;
+  var within7 = diff >= 0 && diff <= 7;
+  var cfg     = TYPES[currentType];
 
-  const items = [
-    { ok: !!plate,         label: '車牌號碼已填寫' },
-    { ok: !!(date && time),label: '違規日期與時間已填寫' },
-    { ok: !!loc,           label: '違規地點已填寫' },
-    { ok: !!vehicle,       label: '車型顏色已填寫' },
-    ...(currentType === 'smoke' ? [
-      { ok: date ? within7 : null, label: '7 天期限未超過' },
-    ] : []),
-    { ok: null, label: '影片已備妥，車牌清晰可辨' },
-    ...(currentType === 'butt' ? [
-      { ok: null, label: '影片含丟棄菸蒂前後連貫動作' },
-      { ok: null, label: '原始影片檔已保留（建議 1–2 個月）' },
-      ...(document.getElementById('city').value === 'newtaipei' ? [
-        { ok: null, label: '新北市獎勵專區需準備自然人憑證' },
-      ] : []),
-    ] : []),
-  ];
+  var items = [
+    {ok:!!plate,          label:'車牌號碼已填寫'},
+    {ok:!!(date && time), label:'違規日期與時間已填寫'},
+    {ok:!!loc,            label:'違規地點已填寫'},
+    {ok:!!vehicle,        label:'車型顏色已填寫'},
+    {ok:date ? within7 : null, label:'7 天期限未超過'},
+  ].concat((cfg.checks||[]).map(function(c){ return {ok:null, label:c}; }));
 
-  document.getElementById('checks').innerHTML = items.map(item => {
-    let dotClass, textClass, symbol;
-    if (item.ok === null) {
-      dotClass = 'manual'; textClass = 'manual'; symbol = '☐';
-    } else if (item.ok) {
-      dotClass = 'ok'; textClass = 'ok'; symbol = '✓';
-    } else {
-      dotClass = 'fail'; textClass = 'fail'; symbol = '✗';
-    }
-    return `
-      <div class="check-item">
-        <div class="check-dot ${dotClass}" aria-hidden="true">${symbol}</div>
-        <span class="check-text ${textClass}">${item.label}${item.ok === null ? '（手動確認）' : ''}</span>
-      </div>`;
+  document.getElementById('checks').innerHTML = items.map(function(item) {
+    var dotCls, textCls, sym;
+    if (item.ok === null) { dotCls='manual'; textCls='manual'; sym='☐'; }
+    else if (item.ok)     { dotCls='ok';     textCls='ok';     sym='✓'; }
+    else                  { dotCls='fail';   textCls='fail';   sym='✗'; }
+    return '<div class="check-item"><div class="check-dot '+dotCls+'" aria-hidden="true">'+sym+'</div><span class="check-text '+textCls+'">'+item.label+(item.ok===null?' （手動確認）':'')+'</span></div>';
   }).join('');
 }
 
-/* ── Copy ── */
+/* ── copy ── */
 function copyText() {
-  const text = document.getElementById('output').textContent;
-  if (!text || text.includes('（車牌）')) return;
-  navigator.clipboard.writeText(text).then(() => {
-    const msg = document.getElementById('copy-msg');
+  var text = document.getElementById('output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var msg = document.getElementById('copy-msg');
     msg.classList.add('show');
-    setTimeout(() => msg.classList.remove('show'), 2500);
-  }).catch(() => {
-    const area = document.getElementById('output');
-    const sel = window.getSelection();
-    const range = document.createRange();
+    setTimeout(function(){ msg.classList.remove('show'); }, 2500);
+  }).catch(function() {
+    var area = document.getElementById('output');
+    var sel = window.getSelection();
+    var range = document.createRange();
     range.selectNodeContents(area);
     sel.removeAllRanges();
     sel.addRange(range);
@@ -840,24 +703,21 @@ function copyText() {
 }
 
 /* ── PWA install ── */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
   document.getElementById('install-banner').classList.add('show');
 });
-
-document.getElementById('install-btn').addEventListener('click', async () => {
+document.getElementById('install-btn').addEventListener('click', function() {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  if (outcome === 'accepted') {
-    document.getElementById('install-banner').classList.remove('show');
-  }
+  deferredPrompt.userChoice.then(function(r) {
+    deferredPrompt = null;
+    if (r.outcome === 'accepted') document.getElementById('install-banner').classList.remove('show');
+  });
 });
-
-window.addEventListener('appinstalled', () => {
+window.addEventListener('appinstalled', function() {
   document.getElementById('install-banner').classList.remove('show');
 });
 
@@ -865,16 +725,15 @@ window.addEventListener('appinstalled', () => {
 (function() {
   document.getElementById('date').value = new Date().toISOString().split('T')[0];
   document.getElementById('city').value = 'taipei';
-  setType('smoke');
+  setType('phone');
   updateLinks();
 })();
 </script>
 
-<!-- PWA service worker registration -->
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(){});
   });
 }
 </script>
