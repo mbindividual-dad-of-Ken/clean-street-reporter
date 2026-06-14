@@ -147,7 +147,7 @@ footer strong{color:rgba(255,255,255,.9)}
       <h1>行車違規檢舉產生器</h1>
       <p>雙北・桃園｜道交條例§7-1全款 + 廢清法</p>
     </div>
-    <span class="version-badge">v2.0.0</span>
+    <span class="version-badge">v3.0.0</span>
   </div>
 </header>
 
@@ -210,9 +210,41 @@ footer strong{color:rgba(255,255,255,.9)}
     <div class="field">
       <label for="city">縣市</label>
       <select id="city" onchange="updateLinks();generate()">
-        <option value="taipei">台北市</option>
-        <option value="newtaipei">新北市</option>
-        <option value="taoyuan">桃園市</option>
+        <optgroup label="北部">
+          <option value="taipei">台北市</option>
+          <option value="newtaipei">新北市</option>
+          <option value="taoyuan">桃園市</option>
+          <option value="keelung">基隆市</option>
+          <option value="hsinchu_city">新竹市</option>
+          <option value="hsinchu_county">新竹縣</option>
+          <option value="miaoli">苗栗縣</option>
+        </optgroup>
+        <optgroup label="中部">
+          <option value="taichung">台中市</option>
+          <option value="changhua">彰化縣</option>
+          <option value="nantou">南投縣</option>
+          <option value="yunlin">雲林縣</option>
+        </optgroup>
+        <optgroup label="南部">
+          <option value="chiayi_city">嘉義市</option>
+          <option value="chiayi_county">嘉義縣</option>
+          <option value="tainan">台南市</option>
+          <option value="kaohsiung">高雄市</option>
+          <option value="pingtung">屏東縣</option>
+        </optgroup>
+        <optgroup label="東部">
+          <option value="yilan">宜蘭縣</option>
+          <option value="hualien">花蓮縣</option>
+          <option value="taitung">台東縣</option>
+        </optgroup>
+        <optgroup label="離島">
+          <option value="penghu">澎湖縣</option>
+          <option value="kinmen">金門縣</option>
+          <option value="lienchiang">連江縣（馬祖）</option>
+        </optgroup>
+        <optgroup label="國道">
+          <option value="freeway">國道公路</option>
+        </optgroup>
       </select>
     </div>
     <div class="field">
@@ -284,7 +316,7 @@ footer strong{color:rgba(255,255,255,.9)}
   <p><strong>⚠️ 免責聲明</strong></p>
   <p>本工具僅協助產生格式化的檢舉文字，實際送件及案件處理結果<br>依各主管機關規定辦理，本工具不負任何法律責任。</p>
   <p style="margin-top:.4rem">🔒 <strong>本工具不儲存、不傳送任何個人資料。</strong>所有輸入僅在您的裝置本機處理。</p>
-  <p style="margin-top:.4rem">v2.0.0 ・ 涵蓋道交條例§7-1全款 ・ 連結驗證 2025-06-15</p>
+  <p style="margin-top:.4rem">v3.0.0 ・ 涵蓋道交條例§7-1全款 ・ 連結驗證 2025-06-15</p>
 </footer>
 
 <script>
@@ -534,27 +566,65 @@ const TYPES = {
   }
 };
 
-/* ── 送件連結 ── */
+/* ── 送件連結 ──
+   每筆結構：
+   { type, label, url?, tel?, note, star? }
+   type: 'web' | 'tel' | 'app' | 'note'
+── */
 const POLICE_LINKS = {
-  taipei:    [{label:'台北市交通違規檢舉系統', url:'https://prsweb.tcpd.gov.tw/', note:'需啟用 JavaScript', star:false}],
-  newtaipei: [{label:'新北市交通違規檢舉系統', url:'https://tvrs.ntpd.gov.tw/Home/Report', note:'', star:false}],
-  taoyuan:   [{label:'桃園市交通違規檢舉系統', url:'https://tvrweb.typd.gov.tw:3444/', note:'', star:false}]
+  taipei:        [{type:'web',label:'台北市交通違規檢舉系統',url:'https://prsweb.tcpd.gov.tw/',note:'需啟用 JavaScript',star:true},{type:'note',label:'備援：撥打 110 或 (02)2375-2100 台北市警察局交通大隊'}],
+  newtaipei:     [{type:'web',label:'新北市交通違規檢舉系統',url:'https://tvrs.ntpd.gov.tw/Home/Report',note:'需 E-mail 驗證後送出',star:true},{type:'note',label:'備援：1999 市民熱線 或 (02)2225-5999 交通大隊'}],
+  taoyuan:       [{type:'web',label:'桃園市交通違規檢舉系統',url:'https://tvrweb.typd.gov.tw:3444/',note:'',star:true},{type:'app',label:'桃園警政 App（Android）',url:'https://play.google.com/store/apps/details?id=com.gov.tyhp',note:'含違規檢舉功能'},{type:'note',label:'備援：撥打 110'}],
+  keelung:       [{type:'web',label:'基隆市警察局交通違規檢舉專區',url:'https://tptv.klg.gov.tw/reportcase/index.aspx',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (02)2428-4141'}],
+  hsinchu_city:  [{type:'web',label:'新竹市警察局交通違規檢舉專區',url:'https://tra2.hccp.gov.tw/new/',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (03)527-0101'}],
+  hsinchu_county:[{type:'web',label:'新竹縣政府警察局交通違規檢舉系統',url:'https://traffic.hchpb.gov.tw/10/13',note:'',star:true},{type:'note',label:'備援：撥打 110'}],
+  miaoli:        [{type:'web',label:'苗栗縣警察局交通違規檢舉專區',url:'https://trv.mpb.gov.tw/Home/Report',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (037)322-009'}],
+  taichung:      [{type:'web',label:'台中市警察局交通違規便民服務網',url:'https://suggest.police.taichung.gov.tw/traffic/',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (04)2329-3337 交通大隊'}],
+  changhua:      [{type:'web',label:'彰化縣警察局交通違規檢舉專區',url:'https://traffic.chpb.gov.tw/ViolatePetition/C005400',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (04)7281-123'}],
+  nantou:        [{type:'web',label:'南投縣政府警察局交通違規檢舉網站',url:'https://jiaowei.ncpd.gov.tw/sc11/rwd/rincase1.aspx',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (049)222-0110'}],
+  yunlin:        [{type:'web',label:'雲林縣警察局交通違規檢舉網站',url:'https://trv.ylhpb.gov.tw/',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (05)532-4141'}],
+  chiayi_city:   [{type:'web',label:'嘉義市政府警察局檢舉專區',url:'https://tr.ccpb.gov.tw/eservice/apply_mode_directions2?itemId=1',note:'需先取得 E-mail 認證碼',star:true},{type:'note',label:'備援：撥打 110 或 (05)225-5110'}],
+  chiayi_county: [{type:'web',label:'嘉義縣警察局交通違規檢舉專區',url:'https://www.cypd.gov.tw/TrafficMailbox/f21e7f75-04e2-082d-d2ae-1d038340ed7b',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (05)362-0110'}],
+  tainan:        [{type:'web',label:'台南市政府警察局交通檢舉信箱',url:'https://tr.tnpd.gov.tw/TrafficMailbox/Index/4b0a8176-a08d-60a4-b25f-cbb95e009897',note:'',star:true},{type:'note',label:'備援：1999 市民熱線 或 (06)229-8100'}],
+  kaohsiung:     [{type:'web',label:'高雄市政府警察局警政信箱',url:'https://policemail.kcg.gov.tw/CP.aspx?n=1',note:'',star:true},{type:'note',label:'備援：1999 市民熱線 或 (07)231-7642'}],
+  pingtung:      [{type:'web',label:'屏東縣政府警察局檢舉專區',url:'https://trafficmailbox.ptpolice.gov.tw',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (08)753-3110 交通隊'}],
+  yilan:         [{type:'web',label:'宜蘭縣政府警察局交通違規檢舉專區',url:'https://ppl.report.ilcpb.gov.tw/index.php?catid=10',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (03)935-3138'}],
+  hualien:       [{type:'web',label:'花蓮縣警察局交通違規檢舉專區',url:'http://hlpb.twgov.mobi/order/index.php',note:'請注意：此為 HTTP 連結',star:true},{type:'note',label:'備援：撥打 110 或 (03)823-2111'}],
+  taitung:       [{type:'web',label:'台東縣警察局交通違規檢舉專區',url:'https://www.ttcpb.gov.tw/chinese/home.jsp?serno=201108090002&&contlink=ap/mail1_1.jsp',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (089)328-344'}],
+  penghu:        [{type:'web',label:'澎湖縣政府警察局交通違規檢舉信箱',url:'https://www.phpb.gov.tw/home.jsp?id=404',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (06)927-4000'}],
+  kinmen:        [{type:'web',label:'金門縣警察局交通違規檢舉專區',url:'https://kpb.kinmen.gov.tw/Content_List.aspx?n=40C0F63E039C5390',note:'',star:true},{type:'note',label:'備援：撥打 110 或 (082)325-641'}],
+  lienchiang:    [{type:'web',label:'連江縣警察局交通違規檢舉',url:'https://www.ljcpb.gov.tw/',note:'請至官網查詢最新檢舉管道',star:true},{type:'note',label:'備援：撥打 110 或 (0836)22-210'}],
+  freeway:       [{type:'web',label:'國道公路警察局線上檢舉系統',url:'https://wos.hpb.gov.tw/RV',note:'僅受理國道違規',star:true},{type:'note',label:'備援：撥打 110 轉接國道警察'}]
 };
 
 const ENV_LINKS = {
-  taipei: [
-    {label:'台北市廢清法檢舉獎勵專區', url:'https://wris.epib.gov.taipei/', note:'實名檢舉，可領 30% 獎勵金', star:true},
-    {label:'環境部公害陳情系統', url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note:'無獎勵金', star:false}
-  ],
-  newtaipei: [
-    {label:'新北市廢清法檢舉獎勵專區', url:'https://envir3.epd.ntpc.gov.tw/cert/login.aspx', note:'需自然人憑證，可領 30% 獎勵金', star:true},
-    {label:'環境部公害陳情系統', url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note:'無獎勵金', star:false}
-  ],
-  taoyuan: [
-    {label:'桃園市廢清法檢舉獎勵專區', url:'https://generalwaste.tyoem.gov.tw/Convenience/Details/8', note:'實名檢舉，可領 30% 獎勵金', star:true},
-    {label:'環境部公害陳情系統', url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx', note:'無獎勵金', star:false}
-  ]
+  taipei:        [{type:'web',label:'台北市廢清法檢舉獎勵專區',url:'https://wris.epib.gov.taipei/',note:'可領 30%–90% 獎勵金（視違規類型）',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  newtaipei:     [{type:'web',label:'新北市廢清法檢舉獎勵專區',url:'https://envir3.epd.ntpc.gov.tw/cert/login.aspx',note:'需自然人憑證，可領 30% 獎勵金',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  taoyuan:       [{type:'web',label:'桃園市廢清法檢舉獎勵專區',url:'https://generalwaste.tyoem.gov.tw/Convenience/Details/8',note:'可領 30% 獎勵金',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  keelung:       [{type:'web',label:'基隆市環保局廢清法檢舉說明',url:'https://www.klepb.klcg.gov.tw/tw/klepb1/3876-285116.html',note:'可領獎勵金，請依說明頁送件',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  hsinchu_city:  [{type:'web',label:'環境部公害陳情系統（新竹市適用）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'新竹市無專屬系統，透過環境部送件；可領獎勵金 10%–30%',star:true}],
+  hsinchu_county:[{type:'web',label:'環境部公害陳情系統（新竹縣適用）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'無專屬系統，透過環境部送件',star:true}],
+  miaoli:        [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  taichung:      [{type:'web',label:'台中市環境保護局陳情檢舉',url:'https://www.epb.taichung.gov.tw/18113/Lpsimplelist',note:'先看說明頁後再至環境部系統送件，可領獎勵金',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  changhua:      [{type:'web',label:'彰化縣廢清法檢舉獎金說明',url:'https://www.chepb.gov.tw/pnp',note:'可領獎勵金，請依說明頁送件',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  nantou:        [{type:'web',label:'南投縣廢清法檢舉獎勵專區',url:'https://www.ntepb.gov.tw/sub/content/index.aspx?Parser=1,16,464',note:'可領獎勵金',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  yunlin:        [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  chiayi_city:   [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  chiayi_county: [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  tainan:        [{type:'web',label:'台南市廢清法檢舉獎金便民服務',url:'https://www.tnepb.gov.tw/mode03_view.aspx?item=20251223143351897',note:'可領獎勵金',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  kaohsiung:     [{type:'web',label:'高雄市民眾檢舉案件資訊管理系統',url:'https://prms.kcg.gov.tw/QA.aspx',note:'可領獎勵金',star:true},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  pingtung:      [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  yilan:         [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  hualien:       [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  taitung:       [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  penghu:        [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  kinmen:        [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  lienchiang:    [{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}],
+  freeway:       [{type:'note',label:'國道違規由國道公路警察局管轄，廢清法菸蒂請改選所在縣市送件'},{type:'web',label:'環境部公害陳情系統（備援，無獎金）',url:'https://ww3.moenv.gov.tw/Public/Case_Add.aspx',note:'適用全台，但不發獎勵金'}]
 };
+
+/* 全國公害陳情備援 */
+const ENV_BACKUP_TEL = '0800-066-666';
 
 /* ── State ── */
 let currentType = 'phone';
@@ -602,29 +672,60 @@ function updateLinks() {
   if (!list) return;
   var container = document.getElementById('links');
   container.innerHTML = '';
+
   list.forEach(function(l) {
     var item = document.createElement('div');
     item.className = 'link-item';
-    var a = document.createElement('a');
-    a.href = l.url;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.textContent = '🔗 ' + l.label;
-    if (l.star) {
-      var badge = document.createElement('span');
-      badge.className = 'link-star';
-      badge.textContent = '推薦領獎';
-      a.appendChild(badge);
-    }
-    item.appendChild(a);
-    if (l.note) {
-      var note = document.createElement('span');
-      note.className = 'link-note';
-      note.textContent = l.note;
-      item.appendChild(note);
+
+    if (l.type === 'note') {
+      var nt = document.createElement('span');
+      nt.className = 'link-note';
+      nt.style.color = 'var(--text-mid)';
+      nt.style.fontSize = '.82rem';
+      nt.textContent = '\u{1F4CB} ' + l.label;
+      item.appendChild(nt);
+    } else if (l.type === 'tel') {
+      var a = document.createElement('a');
+      a.href = 'tel:' + l.tel;
+      a.style.cssText = 'color:var(--green);text-decoration:none;font-weight:500;font-size:.88rem;display:inline-flex;align-items:center;gap:5px';
+      a.textContent = '\u{1F4DE} ' + l.label;
+      item.appendChild(a);
+      if (l.note) {
+        var nt2 = document.createElement('span');
+        nt2.className = 'link-note';
+        nt2.textContent = l.note;
+        item.appendChild(nt2);
+      }
+    } else {
+      var icon = l.type === 'app' ? '\u{1F4F2}' : '\u{1F517}';
+      var a2 = document.createElement('a');
+      a2.href = l.url;
+      a2.target = '_blank';
+      a2.rel = 'noopener noreferrer';
+      a2.textContent = icon + ' ' + l.label;
+      if (l.star) {
+        var badge = document.createElement('span');
+        badge.className = 'link-star';
+        badge.textContent = '\u63A8\u85A6';
+        a2.appendChild(badge);
+      }
+      item.appendChild(a2);
+      if (l.note) {
+        var nt3 = document.createElement('span');
+        nt3.className = 'link-note';
+        nt3.textContent = l.note;
+        item.appendChild(nt3);
+      }
     }
     container.appendChild(item);
   });
+
+  if (cfg.agency === 'env') {
+    var sep = document.createElement('div');
+    sep.style.cssText = 'margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--border);font-size:.72rem;color:var(--text-muted)';
+    sep.textContent = '\u{1F310} \u5168\u570B\u516C\u5BB3\u9673\u60C5\u514D\u8CBB\u5C08\u7DDA\uFF1A' + ENV_BACKUP_TEL + '\uFF0824\u5C0F\u6642\uFF09';
+    container.appendChild(sep);
+  }
 }
 
 /* ── generate ── */
